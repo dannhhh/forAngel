@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Start — 2 Boxen & Ja/Nein</title>
+  <style>
+    :root{--bg:#41173a;--card:#82107b;--accent:#d207ff;--muted:#94a3b8}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, Roboto, system-ui, sans-serif;background:linear-gradient(180deg,#ed83e4 0%, #071624 100%);color:#e6eef6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .container{width:100%;max-width:980px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    h1{font-size:20px;margin:0}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+    .card{background:linear-gradient(180deg,rgba(206, 2, 206, 0.03),transparent);border:1px solid rgba(255,255,255,0.04);padding:26px;border-radius:12px;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+    .card:hover{transform:translateY(-6px);box-shadow:0 8px 28px rgba(2,6,23,0.6)}
+    .card h2{margin:0 0 8px 0;font-size:18px}
+    .card p{margin:0;color:var(--muted)}
+    .question-view{display:none;padding:26px;background:var(--card);border-radius:12px;border:1px solid rgba(255,255,255,0.04);position:relative;overflow:hidden}
+    .question-view.active{display:block}
+    .btn-row{display:flex;gap:12px;margin-top:18px}
+    button{padding:10px 16px;border-radius:10px;border:0;font-size:15px;cursor:pointer}
+    .btn-yes{background:linear-gradient(90deg,var(--accent),#860081);color:#790055}
+    .btn-no{background:transparent;border:1px solid rgba(107, 0, 149, 0.235);color:var(--muted)}
+    button:disabled{opacity:0.45;cursor:not-allowed}
+    .back{margin-top:16px;display:inline-block;background:transparent;border:0;color:var(--muted);cursor:pointer}
+    .result{margin-top:16px;padding:12px;border-radius:8px;background:rgba(255,255,255,0.02);color:#cdeff6}
+    footer{margin-top:24px;color:var(--muted);font-size:13px}
+
+    /* Regen-Effekt für Frage 1 */
+    .rain img{position:absolute;width:30px;opacity:0.8;animation:fall linear forwards;}
+    @keyframes fall{
+      0%{transform:translateY(-10vh) rotate(0deg);opacity:1;}
+      100%{transform:translateY(100vh) rotate(360deg);opacity:0;}
+    }
+
+    /* Spannender Effekt für Frage 2 */
+    #q2{background:radial-gradient(circle at center,#ff00ee 0%,#070e18 100%);box-shadow:inset 0 0 40px #6c015a66;animation:pulse 3s infinite alternate ease-in-out;}
+    @keyframes pulse{
+      0%{box-shadow:inset 0 0 20px #56010133;}
+      100%{box-shadow:inset 0 0 60px #9d4a92aa;}
+    }
+
+    @media (max-width:420px){h1{font-size:16px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Bubu wähl eine Frage</h1>
+      <div style="color:var(--muted);font-size:13px">Du bist meine süße Banane ich liebe dich man</div>
+    </header>
+
+    <!-- Startseite -->
+    <main id="home">
+      <div class="grid">
+        <div class="card" data-target="q1" tabindex="0">
+          <h2>Frage uno</h2>
+          <p>Drück mich babyyyy</p>
+        </div>
+        <div class="card" data-target="q2" tabindex="0">
+          <h2>Frage 2</h2>
+          <p>Cutiepie auf was wartest duuuuu</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Frage-Seiten (werden per JS angezeigt) -->
+    <section id="q1" class="question-view" aria-hidden="true">
+      <div class="rain"></div>
+      <h2>Frage 1</h2>
+      <p>Willst du mich heiraten?</p>
+      <div class="btn-row">
+        <button class="btn-yes" data-action="yes">Ja</button>
+        <button class="btn-no" data-action="no" disabled title="Nein ist hier nicht verfügbar">Nein</button>
+      </div>
+      <div class="result" aria-live="polite" style="display:none"></div>
+      <button class="back" data-action="back">← Zurück</button>
+    </section>
+
+    <section id="q2" class="question-view" aria-hidden="true">
+      <h2>Frage 2</h2>
+      <p>Können wir bangennnn? Auf süß</p>
+      <div class="btn-row">
+        <button class="btn-yes" data-action="yes">Ja</button>
+        <button class="btn-no" data-action="no" disabled title="Nein ist hier nicht verfügbar">Nein</button>
+      </div>
+      <div class="result" aria-live="polite" style="display:none"></div>
+      <button class="back" data-action="back">← Zurück</button>
+    </section>
+
+    <footer>
+      Tipp: du bist eine Ente 
+    </footer>
+  </div>
+
+  <script>
+    const cards = document.querySelectorAll('.card');
+    const views = document.querySelectorAll('.question-view');
+    const home = document.getElementById('home');
+
+    function showView(id){
+      home.style.display = id === 'home' ? '' : 'none';
+      views.forEach(v => {
+        if(v.id === id){
+          v.classList.add('active');
+          v.setAttribute('aria-hidden', 'false');
+        } else {
+          v.classList.remove('active');
+          v.setAttribute('aria-hidden', 'true');
+        }
+      })
+      if(id === 'home') history.pushState(null,'', location.pathname);
+      else history.pushState(null,'', '#'+id);
+
+      if(id === 'q1') startRain();
+      else stopRain();
+    }
+
+    cards.forEach(c => {
+      c.addEventListener('click', () => showView(c.dataset.target));
+      c.addEventListener('keypress', (e) => { if(e.key==='Enter') showView(c.dataset.target) });
+    });
+
+    document.querySelectorAll('[data-action="back"]').forEach(btn => {
+      btn.addEventListener('click', () => showView('home'))
+    });
+
+    document.querySelectorAll('[data-action="yes"]').forEach(btn => {
+      btn.addEventListener('click', (e)=>{
+        const section = e.target.closest('.question-view');
+        const result = section.querySelector('.result');
+        result.style.display = 'block';
+        result.textContent = 'Yayyyyyy🥰❤️';
+        setTimeout(()=>{
+          showView('home');
+          result.style.display = 'none';
+        },4000);
+      })
+    });
+
+    function startRain(){
+      const rainContainer = document.querySelector('.rain');
+      rainContainer.innerHTML = '';
+      for(let i=0;i<200;i++){
+        const drop = document.createElement('img');
+        const images = [
+            'https://www.freeiconspng.com/thumbs/heart-icon/heart-icon-14.png',
+            'https://cdn-icons-png.flaticon.com/512/2386/2386066.png'
+            ];
+        drop.src = images[Math.floor(Math.random()*images.length)];
+        drop.classList.add('raindrop');
+        const size = Math.random()*20+10;
+        drop.style.width = size+'px';
+        drop.style.left = Math.random()*100+'%';
+        drop.style.animationDuration = 2+Math.random()*3+'s';
+        drop.style.animationDelay = Math.random()*2+'s';
+        rainContainer.appendChild(drop);
+      }
+    }
+
+    function stopRain(){
+      const rainContainer = document.querySelector('.rain');
+      if(rainContainer) rainContainer.innerHTML = '';
+    }
+
+    if(location.hash.startsWith('#q1')) showView('q1');
+    if(location.hash.startsWith('#q2')) showView('q2');
+
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') showView('home');
+    })
+  </script>
+</body>
+</html>

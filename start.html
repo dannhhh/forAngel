@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hey baby</title>
+  <style>
+    body {
+      background: radial-gradient(circle at top, #1a1a1a, #000);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 2.3rem;
+      margin-bottom: 40px;
+      animation: fadeIn 2s ease-in-out;
+      letter-spacing: 1px;
+    }
+
+    .head {
+      position: relative;
+      width: 130px;
+      height: 130px;
+      background-image: url('https://www.freeiconspng.com/thumbs/heart-icon/heart-icon-14.png');
+      background-size: cover;
+      cursor: pointer;
+      animation: breathe 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
+      transition: transform 0.3s ease;
+    }
+
+    .head:hover {
+      transform: scale(1.1) rotate(2deg);
+      filter: drop-shadow(0 0 25px rgba(255,255,255,0.4));
+    }
+
+    /* Zwinkern (durch Overlay simuliert) */
+    .eye-blink {
+      position: absolute;
+      top: 35%;
+      left: 0;
+      width: 100%;
+      height: 15%;
+      background-color: rgba(0, 0, 0, 0.8);
+      border-radius: 50%;
+      animation: blink 6s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes blink {
+      0%, 97%, 100% { transform: scaleY(0); opacity: 0; }
+      98% { transform: scaleY(1); opacity: 1; }
+      99% { transform: scaleY(0); opacity: 0; }
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    footer {
+      position: absolute;
+      bottom: 15px;
+      font-size: 0.8rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <h1>Also baby</h1>
+  <h3>Es ist nicht so gut geworden wie ich es mir vorgestellt habe aber ey versprochen es wird besser.
+    Ab jetzt mache ich dir sowas vieeelll öfter. Du musst wissen wie sehr ich dich liebe man du bist die beste.
+    Ey kleines Problem, es kann sein das die Valentin website nicht mehr funktionieren wird upsiii brauch halt den domain.
+    Klickkkk für weiter!!!!
+  </h3>
+
+  <div class="head" onclick="window.location.href='main.html'">
+    <div class="eye-blink"></div>
+  </div>
+
+  <footer>Klick auf den Kopf, wenn du dich traust 👀</footer>
+</body>
+</html>
+ 
